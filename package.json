@@ -1,5 +1,8 @@
 {
   "name": "clipad",
+  "bin": {
+    "clipad": "./index.js"
+  },
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
