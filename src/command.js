@@ -1,5 +1,13 @@
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
+import {
+  newNote,
+  getAllNotes,
+  findNotes,
+  removeNote,
+  removeAllNotes,
+} from './notes.js'
+import { listNotes } from './utils.js'
 
 yargs(hideBin(process.argv))
   .command(
@@ -11,20 +19,26 @@ yargs(hideBin(process.argv))
         description: 'Content of the note to be created',
       })
     },
-    (argv) => {
-      console.log(argv.note)
+    async (argv) => {
+      const tags = argv.tags ? argv.tags.split(',') : []
+      const note = await newNote(argv.note, tags)
+
+      console.log('Note added: ', note)
     }
   )
   .option('tags', {
     alias: 't',
     type: 'string',
-    description: 'Tags to add to the note',
+    description: 'Tags to add to the note, comma-separated',
   })
   .command(
     'all',
     'Get all notes',
     () => {},
-    async (argv) => {}
+    async (_argv) => {
+      const notes = await getAllNotes()
+      listNotes(notes)
+    }
   )
   .command(
     'find <filter>',
