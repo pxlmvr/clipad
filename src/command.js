@@ -50,17 +50,26 @@ yargs(hideBin(process.argv))
         type: 'string',
       })
     },
-    async (argv) => {}
+    async (argv) => {
+      const matches = await findNotes(argv.filter)
+
+      return listNotes(matches)
+    }
   )
-  .command('remove <id>', 'Remove a note by ID', (yargs) => {
-    return (
-      yargs.positional('id', {
+  .command(
+    'remove <id>',
+    'Remove a note by ID',
+    (yargs) => {
+      return yargs.positional('id', {
         type: 'number',
         description: 'The ID of the note to remove',
-      }),
-      (argv) => {}
-    )
-  })
+      })
+    },
+    async (argv) => {
+      const returnedId = await removeNote(argv.id)
+      console.log(returnedId)
+    }
+  )
   .command(
     'web [port]',
     'Launch web view to see notes',
@@ -77,7 +86,14 @@ yargs(hideBin(process.argv))
     'clean',
     'Remove all notes',
     () => {},
-    async (argv) => {}
+    async (_argv) => {
+      const notes = await getAllNotes()
+
+      await removeAllNotes()
+      console.log(
+        `Removed ${notes.length} ${notes.length === 1 ? 'note' : 'notes'}.`
+      )
+    }
   )
   .demandCommand(1)
   .parse()
