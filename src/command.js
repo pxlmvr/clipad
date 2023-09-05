@@ -8,6 +8,7 @@ import {
   removeAllNotes,
 } from './notes.js'
 import { listNotes } from './utils.js'
+import { start } from './server.js'
 
 yargs(hideBin(process.argv))
   .command(
@@ -80,7 +81,10 @@ yargs(hideBin(process.argv))
         describe: 'port to bind on',
       })
     },
-    async (argv) => {}
+    async (argv) => {
+      const notes = await getAllNotes()
+      start(notes, argv.port)
+    }
   )
   .command(
     'clean',
